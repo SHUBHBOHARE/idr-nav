@@ -1,7 +1,8 @@
 import React from 'react';
 import { GNSSStatus } from '../types/navigation';
-import { Satellite, ShieldAlert, Radio, Activity } from 'lucide-react';
+import { ShieldAlert, Radio } from 'lucide-react';
 import { SensorChart } from '../charts/SensorChart';
+import { safeToFixed } from '../utils/formatters';
 
 interface GNSSMonitorProps {
   gnss: GNSSStatus;
@@ -10,13 +11,13 @@ interface GNSSMonitorProps {
 }
 
 export const GNSSMonitor: React.FC<GNSSMonitorProps> = ({ gnss, onSimulateOutage, onRestore }) => {
-  const isOk = gnss.is_available;
+  const isOk = Boolean(gnss?.is_available);
 
-  // Mock accuracy chart history
+  // Accuracy chart history
   const accuracyHistory = Array.from({ length: 20 }, (_, i) => ({
     time: `${i * 2}s`,
-    accuracy: isOk ? (2.0 + Math.sin(i) * 0.4).toFixed(2) : 99.0,
-    hdop: isOk ? (1.1 + Math.cos(i) * 0.1).toFixed(2) : 9.9
+    accuracy: isOk ? safeToFixed(2.0 + Math.sin(i) * 0.4, 2) : '99.00',
+    hdop: isOk ? safeToFixed(1.1 + Math.cos(i) * 0.1, 2) : '9.90'
   }));
 
   return (
@@ -50,25 +51,25 @@ export const GNSSMonitor: React.FC<GNSSMonitorProps> = ({ gnss, onSimulateOutage
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-card p-4 rounded-xl border border-border">
           <span className="text-xs text-muted font-semibold uppercase block mb-1">Satellite Lock Count</span>
-          <div className="text-3xl font-black text-primary">{gnss.satellites}</div>
+          <div className="text-3xl font-black text-primary">{gnss?.satellites ?? 0}</div>
           <span className="text-[11px] text-muted">{isOk ? 'GPS + GLONASS + Galileo' : 'No satellites visible'}</span>
         </div>
 
         <div className="bg-card p-4 rounded-xl border border-border">
           <span className="text-xs text-muted font-semibold uppercase block mb-1">HDOP (Horizontal Dilution)</span>
-          <div className={`text-3xl font-black ${isOk ? 'text-success' : 'text-danger'}`}>{gnss.hdop}</div>
+          <div className={`text-3xl font-black ${isOk ? 'text-success' : 'text-danger'}`}>{gnss?.hdop ?? 9.9}</div>
           <span className="text-[11px] text-muted">{isOk ? 'Ideal Geometry (< 2.0)' : 'Extreme Dilution (> 5.0)'}</span>
         </div>
 
         <div className="bg-card p-4 rounded-xl border border-border">
           <span className="text-xs text-muted font-semibold uppercase block mb-1">Estimated Positional Accuracy</span>
-          <div className="text-3xl font-black text-secondary">± {gnss.accuracy_m.toFixed(1)} m</div>
+          <div className="text-3xl font-black text-secondary">± {safeToFixed(gnss?.accuracy_m, 1)} m</div>
           <span className="text-[11px] text-muted">95% Confidence Radius</span>
         </div>
 
         <div className="bg-card p-4 rounded-xl border border-border">
           <span className="text-xs text-muted font-semibold uppercase block mb-1">Signal Quality Index</span>
-          <div className={`text-3xl font-black ${isOk ? 'text-success' : 'text-danger'}`}>{gnss.signal_quality}</div>
+          <div className={`text-3xl font-black ${isOk ? 'text-success' : 'text-danger'}`}>{gnss?.signal_quality || 'NO_SIGNAL'}</div>
           <span className="text-[11px] text-muted">{isOk ? 'SNR: 42 dB-Hz' : 'Signal Lost'}</span>
         </div>
       </div>

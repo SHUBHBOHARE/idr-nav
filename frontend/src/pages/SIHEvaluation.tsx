@@ -4,6 +4,7 @@ import { Award, Play, CheckCircle2, AlertCircle, FileText, Database, ShieldCheck
 import { api } from '../services/api';
 import { PerformanceChart } from '../charts/PerformanceChart';
 import { VehicleMap } from '../maps/VehicleMap';
+import { safeToFixed } from '../utils/formatters';
 
 const STAGES = [
   '1. Initializing Environment',
@@ -57,7 +58,7 @@ export const SIHEvaluation: React.FC = () => {
     } catch (e: any) {
       const msg = e?.response?.data?.detail || e?.message || "Failed to execute SIH Evaluation";
       setErrorMessage(msg);
-    } fontally: {
+    } finally {
       clearInterval(stageInterval);
       setStageIndex(STAGES.length - 1);
       setRunning(false);
@@ -311,7 +312,7 @@ export const SIHEvaluation: React.FC = () => {
               <tr>
                 <td className="p-3 font-semibold text-text">Dead Reckoning Drift %</td>
                 <td className="p-3 font-mono text-warning">&lt; 10.0% of distance</td>
-                <td className="p-3 font-mono text-success font-bold">{driftPct.toFixed(2)}%</td>
+                <td className="p-3 font-mono text-success font-bold">{safeToFixed(driftPct, 2)}%</td>
                 <td className="p-3 font-mono text-muted">{dataOriginTag}</td>
                 <td className="p-3">
                   <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
@@ -324,7 +325,7 @@ export const SIHEvaluation: React.FC = () => {
               <tr>
                 <td className="p-3 font-semibold text-text">Fused Position RMSE</td>
                 <td className="p-3 font-mono text-warning">&lt; 5.0 m (Outage)</td>
-                <td className="p-3 font-mono text-success font-bold">{fusedRmse.toFixed(2)} m</td>
+                <td className="p-3 font-mono text-success font-bold">{safeToFixed(fusedRmse, 2)} m</td>
                 <td className="p-3 font-mono text-muted">{dataOriginTag}</td>
                 <td className="p-3">
                   <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
@@ -348,7 +349,7 @@ export const SIHEvaluation: React.FC = () => {
               <tr>
                 <td className="p-3 font-semibold text-text">AI Inference Latency</td>
                 <td className="p-3 font-mono text-warning">&lt; 5.0 ms</td>
-                <td className="p-3 font-mono text-secondary font-bold">{latencyMs.toFixed(1)} ms</td>
+                <td className="p-3 font-mono text-secondary font-bold">{safeToFixed(latencyMs, 1)} ms</td>
                 <td className="p-3 font-mono text-muted">Random Forest / ONNX</td>
                 <td className="p-3">
                   <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
@@ -386,15 +387,15 @@ export const SIHEvaluation: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-border/60">
               {metricsList.map((m: any, idx: number) => (
-                <tr key={idx} className={m.method?.includes('Map Matching') ? 'bg-success/10 font-bold text-text' : 'text-muted'}>
-                  <td className="p-3 font-semibold text-text">{m.method}</td>
-                  <td className="p-3 font-mono text-primary">{m.position_rmse_m} m</td>
-                  <td className="p-3 font-mono">{m.mean_position_error_m} m</td>
-                  <td className="p-3 font-mono text-danger">{m.max_position_error_m} m</td>
-                  <td className="p-3 font-mono text-warning">{m.drift_percentage}%</td>
-                  <td className="p-3 font-mono">{m.velocity_rmse_m_s} m/s</td>
-                  <td className="p-3 font-mono">{m.heading_error_deg}°</td>
-                  <td className="p-3 font-mono text-secondary">{m.inference_latency_ms} ms</td>
+                <tr key={idx} className={m?.method?.includes('Map Matching') ? 'bg-success/10 font-bold text-text' : 'text-muted'}>
+                  <td className="p-3 font-semibold text-text">{m?.method || 'N/A'}</td>
+                  <td className="p-3 font-mono text-primary">{safeToFixed(m?.position_rmse_m, 2)} m</td>
+                  <td className="p-3 font-mono">{safeToFixed(m?.mean_position_error_m, 2)} m</td>
+                  <td className="p-3 font-mono text-danger">{safeToFixed(m?.max_position_error_m, 2)} m</td>
+                  <td className="p-3 font-mono text-warning">{safeToFixed(m?.drift_percentage, 2)}%</td>
+                  <td className="p-3 font-mono">{safeToFixed(m?.velocity_rmse_m_s, 2)} m/s</td>
+                  <td className="p-3 font-mono">{safeToFixed(m?.heading_error_deg, 1)}°</td>
+                  <td className="p-3 font-mono text-secondary">{safeToFixed(m?.inference_latency_ms, 1)} ms</td>
                 </tr>
               ))}
             </tbody>

@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import { TrajectoryPoint } from '../types/navigation';
 import { getMapProvider } from './providers';
+import { safeToFixed } from '../utils/formatters';
 
 // Custom Vehicle Marker Icon
 const vehicleIcon = L.divIcon({
@@ -146,8 +147,8 @@ export const VehicleMap: React.FC<VehicleMapProps> = ({
           <Popup>
             <div className="text-xs font-bold text-gray-900">
               Vehicle Position<br />
-              Lat: {center[0].toFixed(6)}<br />
-              Lon: {center[1].toFixed(6)}
+              Lat: {safeToFixed(center[0], 6)}<br />
+              Lon: {safeToFixed(center[1], 6)}
             </div>
           </Popup>
         </Marker>

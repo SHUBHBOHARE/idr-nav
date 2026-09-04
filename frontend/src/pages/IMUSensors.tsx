@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IMULatest } from '../types/navigation';
 import { SensorChart } from '../charts/SensorChart';
 import { Cpu, Filter, Sliders } from 'lucide-react';
+import { safeToFixed } from '../utils/formatters';
 
 interface IMUSensorsProps {
   imu: IMULatest;
@@ -47,15 +48,15 @@ export const IMUSensors: React.FC<IMUSensorsProps> = ({ imu, imuHistory }) => {
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Ax</span>
-              <span className="text-base font-mono font-bold text-text">{imu.accel[0].toFixed(2)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.accel?.[0], 2)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Ay</span>
-              <span className="text-base font-mono font-bold text-text">{imu.accel[1].toFixed(2)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.accel?.[1], 2)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Az</span>
-              <span className="text-base font-mono font-bold text-text">{imu.accel[2].toFixed(2)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.accel?.[2], 2)}</span>
             </div>
           </div>
         </div>
@@ -69,15 +70,15 @@ export const IMUSensors: React.FC<IMUSensorsProps> = ({ imu, imuHistory }) => {
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Gx</span>
-              <span className="text-base font-mono font-bold text-text">{imu.gyro[0].toFixed(3)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.gyro?.[0], 3)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Gy</span>
-              <span className="text-base font-mono font-bold text-text">{imu.gyro[1].toFixed(3)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.gyro?.[1], 3)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Gz (Yaw)</span>
-              <span className="text-base font-mono font-bold text-secondary">{imu.gyro[2].toFixed(3)}</span>
+              <span className="text-base font-mono font-bold text-secondary">{safeToFixed(imu?.gyro?.[2], 3)}</span>
             </div>
           </div>
         </div>
@@ -91,15 +92,15 @@ export const IMUSensors: React.FC<IMUSensorsProps> = ({ imu, imuHistory }) => {
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Mx</span>
-              <span className="text-base font-mono font-bold text-text">{imu.mag[0].toFixed(1)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.mag?.[0], 1)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">My</span>
-              <span className="text-base font-mono font-bold text-text">{imu.mag[1].toFixed(1)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.mag?.[1], 1)}</span>
             </div>
             <div className="bg-surface p-2 rounded border border-border">
               <span className="text-[10px] text-muted block">Mz</span>
-              <span className="text-base font-mono font-bold text-text">{imu.mag[2].toFixed(1)}</span>
+              <span className="text-base font-mono font-bold text-text">{safeToFixed(imu?.mag?.[2], 1)}</span>
             </div>
           </div>
         </div>
@@ -108,7 +109,7 @@ export const IMUSensors: React.FC<IMUSensorsProps> = ({ imu, imuHistory }) => {
       {/* Real-time Plots */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SensorChart
-          data={imuHistory}
+          data={imuHistory || []}
           title="Accelerometer X / Y / Z Waves"
           lines={[
             { key: 'ax', color: '#00B8FF', name: 'Ax (Forward)' },
@@ -118,7 +119,7 @@ export const IMUSensors: React.FC<IMUSensorsProps> = ({ imu, imuHistory }) => {
         />
 
         <SensorChart
-          data={imuHistory}
+          data={imuHistory || []}
           title="Gyroscope Yaw Rate Gz Waves (rad/s)"
           lines={[
             { key: 'gz', color: '#F59E0B', name: 'Gz Yaw Rate' },

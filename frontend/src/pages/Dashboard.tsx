@@ -5,6 +5,7 @@ import { OutageBanner } from '../components/OutageBanner';
 import { TelemetryCard } from '../components/TelemetryCard';
 import { VehicleMap } from '../maps/VehicleMap';
 import { SensorChart } from '../charts/SensorChart';
+import { safeToFixed } from '../utils/formatters';
 import { Gauge, Navigation, Compass, AlertOctagon, Activity, Radio, Cpu, CheckCircle } from 'lucide-react';
 
 interface DashboardProps {
@@ -13,19 +14,19 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
-  const isOutage = state.gnss_status === 'LOST';
+  const isOutage = state?.gnss_status === 'LOST';
 
   return (
     <div className="space-y-6">
       {/* Top Banner if Outage */}
       <OutageBanner
         outageActive={isOutage}
-        outageDuration={state.outage_duration_s}
-        driftM={state.drift_m}
+        outageDuration={state?.outage_duration_s ?? 0}
+        driftM={state?.drift_m ?? 0}
       />
 
-      {/* A. & B. Current Navigation Mode & System Status */}
-      <ModeBadge mode={state.mode} gnssStatus={state.gnss_status} />
+      {/* System Status & Mode */}
+      <ModeBadge mode={state?.mode || 'GNSS + INS'} gnssStatus={state?.gnss_status || 'CONNECTED'} />
 
       {/* System Status Grid */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -80,11 +81,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
         </div>
       </div>
 
-      {/* D. Telemetry Cards */}
+      {/* Telemetry Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <TelemetryCard
           title="Vehicle Speed"
-          value={state.speed_km_h.toFixed(1)}
+          value={safeToFixed(state?.speed_km_h, 1)}
           unit="km/h"
           icon={Gauge}
           subtext="AI Estimated Velocity"
@@ -92,7 +93,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
         />
         <TelemetryCard
           title="Heading Angle"
-          value={state.heading_deg.toFixed(1)}
+          value={safeToFixed(state?.heading_deg, 1)}
           unit="deg"
           icon={Compass}
           subtext="Integrated Yaw Rate"
@@ -100,15 +101,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
         />
         <TelemetryCard
           title="Cumulative Drift"
-          value={state.drift_m.toFixed(2)}
+          value={safeToFixed(state?.drift_m, 2)}
           unit="m"
           icon={AlertOctagon}
-          subtext={`Drift Rate: ${state.drift_percentage.toFixed(2)}%`}
+          subtext={`Drift Rate: ${safeToFixed(state?.drift_percentage, 2)}%`}
           color={isOutage ? 'danger' : 'success'}
         />
         <TelemetryCard
           title="Position Accuracy"
-          value={`±${state.position_confidence_m.toFixed(1)}`}
+          value={`±${safeToFixed(state?.position_confidence_m, 1)}`}
           unit="m"
           icon={Navigation}
           subtext="EKF Covariance Bound"
@@ -116,20 +117,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
         />
       </div>
 
-      {/* C. Live Vehicle Map & G. Drift Monitor */}
+      {/* Live Vehicle Map & Outage Timeline */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <VehicleMap
-            currentLat={state.current_lat}
-            currentLon={state.current_lon}
-            trajectories={state.trajectories}
+            currentLat={state?.current_lat ?? 37.7749}
+            currentLon={state?.current_lon ?? -122.4194}
+            trajectories={state?.trajectories || {}}
           />
         </div>
 
         {/* AI & Outage Timeline Monitor Card */}
         <div className="bg-card border border-border rounded-xl p-5 space-y-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-xs uppercase font-bold tracking-wider text-muted mb-4">H. GNSS Outage Timeline State</h3>
+            <h3 className="text-xs uppercase font-bold tracking-wider text-muted mb-4">GNSS Outage Timeline State</h3>
             <div className="space-y-3 relative pl-4 border-l-2 border-border">
               <div className="relative">
                 <span className="w-2.5 h-2.5 rounded-full bg-success absolute -left-[21px] top-1"></span>
@@ -158,7 +159,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
           </div>
 
           <div className="bg-surface p-3 rounded-lg border border-border/80">
-            <span className="text-[11px] text-muted block uppercase font-bold mb-1">F. AI Model Inference Status</span>
+            <span className="text-[11px] text-muted block uppercase font-bold mb-1">AI Model Inference Status</span>
             <div className="flex justify-between text-xs">
               <span className="text-muted">Speed Estimator Latency:</span>
               <span className="font-mono text-primary font-bold">1.4 ms</span>
@@ -171,9 +172,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, imuHistory }) => {
         </div>
       </div>
 
-      {/* E. Real-Time Sensor Graph */}
+      {/* Real-Time Sensor Graph */}
       <SensorChart
-        data={imuHistory}
+        data={imuHistory || []}
         title="Real-Time Accelerometer Telemetry (m/s²)"
         lines={[
           { key: 'ax', color: '#00B8FF', name: 'Ax (Forward)' },

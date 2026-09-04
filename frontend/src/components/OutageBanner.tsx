@@ -1,5 +1,6 @@
 import React from 'react';
-import { AlertCircle, Zap } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
+import { safeToFixed } from '../utils/formatters';
 
 interface OutageBannerProps {
   outageActive: boolean;
@@ -23,11 +24,11 @@ export const OutageBanner: React.FC<OutageBannerProps> = ({ outageActive, outage
       <div className="flex items-center space-x-6 text-sm">
         <div className="bg-card/80 px-3 py-1.5 rounded-lg border border-border">
           <span className="text-muted text-xs block">Outage Duration</span>
-          <span className="font-bold text-warning">{outageDuration.toFixed(1)}s</span>
+          <span className="font-bold text-warning">{safeToFixed(outageDuration, 1)}s</span>
         </div>
         <div className="bg-card/80 px-3 py-1.5 rounded-lg border border-border">
           <span className="text-muted text-xs block">Est. Cumulative Drift</span>
-          <span className="font-bold text-danger">{driftM.toFixed(2)} m</span>
+          <span className="font-bold text-danger">{safeToFixed(driftM, 2)} m</span>
         </div>
       </div>
     </div>

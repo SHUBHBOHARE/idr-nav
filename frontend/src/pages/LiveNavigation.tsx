@@ -5,6 +5,7 @@ import { OutageBanner } from '../components/OutageBanner';
 import { VehicleMap } from '../maps/VehicleMap';
 import { Play, Pause, Square, RotateCcw, AlertTriangle, ShieldCheck, Gauge, Compass } from 'lucide-react';
 import { api } from '../services/api';
+import { safeToFixed } from '../utils/formatters';
 
 interface LiveNavigationProps {
   state: NavigationState;
@@ -164,7 +165,7 @@ export const LiveNavigation: React.FC<LiveNavigationProps> = ({ state, onRefresh
           <div>
             <span className="text-xs text-muted block">Speed</span>
             <div className="flex items-baseline space-x-1">
-              <span className="text-3xl font-black text-primary">{state.speed_km_h.toFixed(1)}</span>
+              <span className="text-3xl font-black text-primary">{safeToFixed(state?.speed_km_h, 1)}</span>
               <span className="text-xs text-muted uppercase">km/h</span>
             </div>
           </div>
@@ -172,7 +173,7 @@ export const LiveNavigation: React.FC<LiveNavigationProps> = ({ state, onRefresh
           <div>
             <span className="text-xs text-muted block">Heading Angle</span>
             <div className="flex items-baseline space-x-1">
-              <span className="text-2xl font-black text-secondary">{state.heading_deg.toFixed(1)}</span>
+              <span className="text-2xl font-black text-secondary">{safeToFixed(state?.heading_deg, 1)}</span>
               <span className="text-xs text-muted">deg (NE)</span>
             </div>
           </div>
@@ -180,19 +181,19 @@ export const LiveNavigation: React.FC<LiveNavigationProps> = ({ state, onRefresh
           <div>
             <span className="text-xs text-muted block">Active Road Segment</span>
             <span className="text-sm font-bold text-text bg-surface px-2.5 py-1 rounded border border-border block mt-1">
-              {state.active_road}
+              {state?.active_road || 'Market Street'}
             </span>
           </div>
 
           <div>
             <span className="text-xs text-muted block">Position Confidence</span>
-            <span className="text-sm font-bold text-success">± {state.position_confidence_m.toFixed(1)} m</span>
+            <span className="text-sm font-bold text-success">± {safeToFixed(state?.position_confidence_m, 1)} m</span>
           </div>
 
           <div className="pt-2 border-t border-border">
             <span className="text-[11px] text-muted block">Cumulative Dead Reckoning Drift</span>
             <span className={`text-lg font-black ${isOutage ? 'text-danger' : 'text-text'}`}>
-              {state.drift_m.toFixed(2)} m ({state.drift_percentage.toFixed(2)}%)
+              {safeToFixed(state?.drift_m, 2)} m ({safeToFixed(state?.drift_percentage, 2)}%)
             </span>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PerformanceMetrics } from '../types/navigation';
 import { PerformanceChart } from '../charts/PerformanceChart';
-import { Award, BarChart3, CheckCircle, ShieldCheck } from 'lucide-react';
+import { safeToFixed } from '../utils/formatters';
 
 interface PerformanceProps {
   metrics: PerformanceMetrics | null;
@@ -68,23 +68,26 @@ export const Performance: React.FC<PerformanceProps> = ({ metrics }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
-              {comparisons.map((c, idx) => (
-                <tr key={idx} className={c.method.includes('Map Matching') ? 'bg-primary/10 font-bold text-text' : 'text-muted'}>
-                  <td className="p-3 font-semibold text-text">{c.method}</td>
-                  <td className="p-3 font-mono">{c.position_rmse_m} m</td>
-                  <td className="p-3 font-mono">{c.drift_percent}%</td>
-                  <td className="p-3">{c.status}</td>
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${
-                      c.position_rmse_m < 1.0 ? 'bg-success/20 text-success border border-success/40' :
-                      c.position_rmse_m < 5.0 ? 'bg-primary/20 text-primary border border-primary/40' :
-                      'bg-danger/20 text-danger border border-danger/40'
-                    }`}>
-                      {c.position_rmse_m < 1.0 ? 'OPTIMAL' : c.position_rmse_m < 5.0 ? 'PASSED' : 'HIGH DRIFT'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {comparisons.map((c: any, idx: number) => {
+                const rmse = Number(c?.position_rmse_m ?? 0);
+                return (
+                  <tr key={idx} className={c?.method?.includes('Map Matching') ? 'bg-primary/10 font-bold text-text' : 'text-muted'}>
+                    <td className="p-3 font-semibold text-text">{c?.method || 'N/A'}</td>
+                    <td className="p-3 font-mono">{safeToFixed(c?.position_rmse_m, 2)} m</td>
+                    <td className="p-3 font-mono">{safeToFixed(c?.drift_percent, 2)}%</td>
+                    <td className="p-3">{c?.status || 'N/A'}</td>
+                    <td className="p-3">
+                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${
+                        rmse < 1.0 ? 'bg-success/20 text-success border border-success/40' :
+                        rmse < 5.0 ? 'bg-primary/20 text-primary border border-primary/40' :
+                        'bg-danger/20 text-danger border border-danger/40'
+                      }`}>
+                        {rmse < 1.0 ? 'OPTIMAL' : rmse < 5.0 ? 'PASSED' : 'HIGH DRIFT'}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
