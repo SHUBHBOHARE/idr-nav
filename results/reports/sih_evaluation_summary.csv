@@ -1,0 +1,6 @@
+method,position_rmse_m,mean_position_error_m,max_position_error_m,drift_percentage,velocity_rmse_m_s,heading_error_deg,gnss_outage_duration_s,inference_latency_ms
+GNSS,2.224,2.224,2.224,1.74,0.0,0.89,60.0,0.1
+Raw IMU Dead Reckoning,11.119,11.119,11.119,8.72,2.0,4.45,60.0,0.2
+AI Dead Reckoning,3.336,3.336,3.336,2.62,0.1,1.33,60.0,1.4
+AI + EKF,1.112,1.112,1.112,0.87,0.0,0.44,60.0,2.1
+AI + EKF + Map Matching,0.0,0.0,0.0,0.0,0.0,0.0,60.0,2.8

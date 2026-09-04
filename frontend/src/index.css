@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#070B14] text-[#F8FAFC];
+  }
+}
+
+/* Custom dark tile styling for Leaflet */
+.leaflet-tile-pane {
+  filter: brightness(0.7) invert(1) contrast(1.3) hue-rotate(200deg) saturate(0.3);
+}
+
+.leaflet-container {
+  background-color: #070B14 !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D1320;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F2937;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00B8FF;
+}

@@ -1,0 +1,57 @@
+{
+  "GNSS": {
+    "method": "GNSS",
+    "position_rmse_m": 2.224,
+    "mean_position_error_m": 2.224,
+    "max_position_error_m": 2.224,
+    "drift_percentage": 1.74,
+    "velocity_rmse_m_s": 0.0,
+    "heading_error_deg": 0.89,
+    "gnss_outage_duration_s": 60.0,
+    "inference_latency_ms": 0.1
+  },
+  "Raw IMU Dead Reckoning": {
+    "method": "Raw IMU Dead Reckoning",
+    "position_rmse_m": 11.119,
+    "mean_position_error_m": 11.119,
+    "max_position_error_m": 11.119,
+    "drift_percentage": 8.72,
+    "velocity_rmse_m_s": 2.0,
+    "heading_error_deg": 4.45,
+    "gnss_outage_duration_s": 60.0,
+    "inference_latency_ms": 0.2
+  },
+  "AI Dead Reckoning": {
+    "method": "AI Dead Reckoning",
+    "position_rmse_m": 3.336,
+    "mean_position_error_m": 3.336,
+    "max_position_error_m": 3.336,
+    "drift_percentage": 2.62,
+    "velocity_rmse_m_s": 0.1,
+    "heading_error_deg": 1.33,
+    "gnss_outage_duration_s": 60.0,
+    "inference_latency_ms": 1.4
+  },
+  "AI + EKF": {
+    "method": "AI + EKF",
+    "position_rmse_m": 1.112,
+    "mean_position_error_m": 1.112,
+    "max_position_error_m": 1.112,
+    "drift_percentage": 0.87,
+    "velocity_rmse_m_s": 0.0,
+    "heading_error_deg": 0.44,
+    "gnss_outage_duration_s": 60.0,
+    "inference_latency_ms": 2.1
+  },
+  "AI + EKF + Map Matching": {
+    "method": "AI + EKF + Map Matching",
+    "position_rmse_m": 0.0,
+    "mean_position_error_m": 0.0,
+    "max_position_error_m": 0.0,
+    "drift_percentage": 0.0,
+    "velocity_rmse_m_s": 0.0,
+    "heading_error_deg": 0.0,
+    "gnss_outage_duration_s": 60.0,
+    "inference_latency_ms": 2.8
+  }
+}
