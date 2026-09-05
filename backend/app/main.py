@@ -8,21 +8,23 @@ from backend.app.api.endpoints import router as api_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="Backend REST API for IDR NAV — Intelligent Dead Reckoning & GNSS Fusion Engine",
-    version="1.0.0"
+    description='Backend REST API for IDR NAV - Intelligent Dead Reckoning & GNSS Fusion Engine',
+    version='2.0.0'
 )
 
 cors_origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://idr-nav-937i.vercel.app',
+    'https://idr-nav.vercel.app',
 ]
 
 if settings.FRONTEND_URL:
-    clean_frontend_url = settings.FRONTEND_URL.rstrip("/")
+    clean_frontend_url = settings.FRONTEND_URL.rstrip('/')
     if clean_frontend_url not in cors_origins:
         cors_origins.append(clean_frontend_url)
 
@@ -30,17 +32,18 @@ if settings.FRONTEND_URL:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
+    allow_origin_regex=r'https://.*\.vercel\.app',
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
-@app.on_event("startup")
+@app.on_event('startup')
 def startup_event():
     init_db()
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run('backend.app.main:app', host='0.0.0.0', port=8000, reload=True)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SIHBenchmarkResult } from '../types/navigation';
 import { Award, Play, CheckCircle2, AlertCircle, FileText, Database, ShieldCheck, Activity, Radio, Cpu, Navigation, MapPin } from 'lucide-react';
-import { api } from '../services/api';
+import { api, API_BASE_URL } from '../services/api';
 import { PerformanceChart } from '../charts/PerformanceChart';
 import { VehicleMap } from '../maps/VehicleMap';
 import { safeToFixed } from '../utils/formatters';
@@ -433,13 +433,13 @@ export const SIHEvaluation: React.FC = () => {
 
         <div className="bg-surface p-4 rounded-xl border border-border flex justify-center items-center min-h-[350px]">
           {activePlot === 'combined' && (
-            <img src="/api/sih/plots/combined_trajectories.png" alt="Combined Trajectories" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
+            <img src={`${API_BASE_URL}/sih/plots/combined_trajectories.png`} alt="Combined Trajectories" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
           )}
           {activePlot === 'barchart' && (
-            <img src="/api/sih/plots/rmse_comparison_barchart.png" alt="RMSE Comparison Bar Chart" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
+            <img src={`${API_BASE_URL}/sih/plots/rmse_comparison_barchart.png`} alt="RMSE Comparison Bar Chart" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
           )}
           {activePlot === 'error' && (
-            <img src="/api/sih/plots/position_error_time.png" alt="Position Error Over Time" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
+            <img src={`${API_BASE_URL}/sih/plots/position_error_time.png`} alt="Position Error Over Time" className="max-h-[400px] rounded-lg shadow-lg border border-border" />
           )}
         </div>
       </div>
