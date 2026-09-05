@@ -12,21 +12,21 @@ app = FastAPI(
     version='2.0.0'
 )
 
-cors_origins = [
+# Parse FRONTEND_URL environment variable dynamically
+raw_frontend_urls = os.getenv('FRONTEND_URL', '')
+env_origins = [url.strip().rstrip('/') for url in raw_frontend_urls.split(',') if url.strip()]
+
+cors_origins = list(set([
+    'https://idr-nav-6db2.vercel.app',
+    'https://idr-nav-937i.vercel.app',
+    'https://idr-nav.vercel.app',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'https://idr-nav-937i.vercel.app',
-    'https://idr-nav.vercel.app',
-]
-
-if settings.FRONTEND_URL:
-    clean_frontend_url = settings.FRONTEND_URL.rstrip('/')
-    if clean_frontend_url not in cors_origins:
-        cors_origins.append(clean_frontend_url)
+] + env_origins))
 
 # CORS middleware for React frontend connectivity
 app.add_middleware(
